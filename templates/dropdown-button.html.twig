@@ -9,10 +9,10 @@
   <button class="active" aria-expanded="false">{{ button_icon }}{{ button_text }}</button>
   <div class="dropdown">
     <ul>
-      {% for key, item in links %}
+      {% for key, item in items %}
         {% if item.url|render|trim is not empty %}
           <li class="{{ item.attributes.class|join(' ') }}">
-            <a href="{{ item.link }}">
+            <a href="/{{ item.language.id }}{{ link }}">
               {{ item.title.icon }}{{ item.title.title }}
             </a>
           </li>

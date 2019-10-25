@@ -434,20 +434,17 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
 
         case self::LANGDROPDOWN_DROPDOWN:
           $current_langcode = $this->languageManager->getCurrentLanguage()->getId();
+          $current_link_path = Url::fromRoute($route_name)->getInternalPath();
 
           $output = [
             '#theme' => 'dropdown_button',
-            '#links' => $links->links,
+            '#items' => $links->links,
+            '#link' => (empty($current_link_path)) ? '' : '/' . $current_link_path,
             '#button_text' => $this->configuration["lang_names"][$current_langcode],
             '#button_icon' => $this->buildIcons(
               $this->configuration['lang_icons'][$current_langcode],
               $this->configuration["lang_names"][$current_langcode]
             ),
-            '#attributes' => [
-              'class' => [
-                "language-switcher-{$links->method_id}",
-              ],
-            ],
             '#cache' => [
               'contexts' => [
                 'user.permissions',

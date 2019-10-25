@@ -40,8 +40,8 @@ function skilld_lang_dropdown_theme($existing, $type, $theme, $path) {
     'dropdown_button' => [
       'template' => 'dropdown-button',
       'variables' => [
-        'attributes' => [],
-        'links' => [],
+        'items' => [],
+        'link' => [],
         'button_icon' => '',
         'button_text' => '',
       ],
