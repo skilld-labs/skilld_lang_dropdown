@@ -10,9 +10,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\Language;
 use Drupal\Core\Asset\LibraryDiscovery;
 use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\Core\Path\PathMatcherInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 use Drupal\skilld_lang_dropdown\Form\LanguageDropdownForm;
 use Drupal\Core\Session\AccountProxyInterface;
@@ -54,11 +54,11 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
   protected $currentUser;
 
   /**
-   * The path matcher.
+   * The current route match.
    *
-   * @var \Drupal\Core\Path\PathMatcherInterface
+   * @var \Drupal\Core\Routing\RouteMatchInterface
    */
-  protected $pathMatcher;
+  protected $routeMatch;
 
   /**
    * The MIME type guesser.
@@ -101,8 +101,8 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
    *   The language manager.
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   The current user account.
-   * @param \Drupal\Core\Path\PathMatcherInterface $path_matcher
-   *   The path matcher.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The current route match.
    * @param \Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesserInterface $mime_type_guesser
    *   The MIME type guesser instance to use.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
@@ -118,7 +118,7 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
     $plugin_definition,
     LanguageManagerInterface $language_manager,
     AccountProxyInterface $current_user,
-    PathMatcherInterface $path_matcher,
+    RouteMatchInterface $route_match,
     MimeTypeGuesserInterface $mime_type_guesser,
     ModuleHandlerInterface $module_handler,
     FormBuilderInterface $form_builder,
@@ -127,7 +127,7 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->languageManager = $language_manager;
     $this->currentUser = $current_user;
-    $this->pathMatcher = $path_matcher;
+    $this->routeMatch = $route_match;
     $this->mimeTypeGuesser = $mime_type_guesser;
     $this->moduleHandler = $module_handler;
     $this->formBuilder = $form_builder;
@@ -149,7 +149,7 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
       $plugin_definition,
       $container->get('language_manager'),
       $container->get('current_user'),
-      $container->get('path.matcher'),
+      $container->get('current_route_match'),
       $container->get('file.mime_type.guesser'),
       $container->get('module_handler'),
       $container->get('form_builder'),
@@ -341,11 +341,8 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
   public function build() {
     $build = [];
 
-    $route_name = $this->pathMatcher->isFrontPage() ? '<front>' : '<current>';
-    $links = $this->languageManager->getLanguageSwitchLinks(
-      Language::TYPE_URL,
-      Url::fromRoute($route_name)
-    );
+    $type = $this->getDerivativeId();
+    $links = $this->languageManager->getLanguageSwitchLinks($type, Url::fromRouteMatch($this->routeMatch));
     $roles = $this->currentUser->getRoles();
 
     if (isset($links->links)) {
