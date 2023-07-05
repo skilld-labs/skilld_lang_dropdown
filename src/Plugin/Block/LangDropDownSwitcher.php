@@ -19,7 +19,7 @@ use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\user\Entity\Role;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser;
+use Symfony\Component\Mime\MimeTypeGuesserInterface;
 
 /**
  * This block displays languages list as dropdown.
@@ -63,7 +63,7 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
   /**
    * The MIME type guesser.
    *
-   * @var \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser
+   * @var \Symfony\Component\Mime\MimeTypeGuesserInterface
    */
   protected $mimeTypeGuesser;
 
@@ -103,7 +103,7 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
    *   The current user account.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The current route match.
-   * @param \Drupal\Core\ProxyClass\File\MimeType\MimeTypeGuesser $mime_type_guesser
+   * @param \Symfony\Component\Mime\MimeTypeGuesserInterface $mime_type_guesser
    *   The MIME type guesser instance to use.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
@@ -119,7 +119,7 @@ class LangDropDownSwitcher extends BlockBase implements ContainerFactoryPluginIn
     LanguageManagerInterface $language_manager,
     AccountProxyInterface $current_user,
     RouteMatchInterface $route_match,
-    MimeTypeGuesser $mime_type_guesser,
+    MimeTypeGuesserInterface $mime_type_guesser,
     ModuleHandlerInterface $module_handler,
     FormBuilderInterface $form_builder,
     LibraryDiscovery $library_discovery
